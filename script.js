@@ -90,7 +90,9 @@ const quizData = [
 // 상태 변수
 let currentQuestionIndex = 0;
 let score = 0;
-let selectedOption = null;
+let attemptCount = 0; // 현재 문제에 대한 시도 횟수
+let isSolved = false;   // 현재 문제를 맞혔는지 여부
+
 let categoryScores = {
   "임진왜란": { correct: 0, total: 0 },
   "광해군의 정치": { correct: 0, total: 0 },
@@ -115,10 +117,10 @@ const categoryTag = document.getElementById("category-tag");
 const questionText = document.getElementById("question-text");
 const optionsContainer = document.getElementById("options-container");
 
+const feedbackMessage = document.getElementById("feedback-message");
 const hintBox = document.getElementById("hint-box");
 const hintText = document.getElementById("hint-text");
 const explanationBox = document.getElementById("explanation-box");
-const resultMessage = document.getElementById("result-message");
 const explanationText = document.getElementById("explanation-text");
 
 const finalScoreDisplay = document.getElementById("final-score");
@@ -173,9 +175,13 @@ function loadQuestion() {
   });
 }
 
-// 초기화
+// 상태 초기화
 function resetState() {
-  selectedOption = null;
+  attemptCount = 0;
+  isSolved = false;
+
+  feedbackMessage.className = "feedback-message hidden";
+  feedbackMessage.textContent = "";
   hintBox.classList.add("hidden");
   explanationBox.classList.add("hidden");
   nextBtn.classList.add("hidden");
@@ -183,35 +189,50 @@ function resetState() {
   optionsContainer.innerHTML = "";
 }
 
-// 답 선택 시
+// 보기 클릭 처리
 function selectOption(index, selectedBtn) {
-  if (selectedOption !== null) return;
-  selectedOption = index;
+  if (isSolved) return; // 이미 정답을 맞힌 문제라면 동작 안 함
 
+  attemptCount++;
   const currentQuiz = quizData[currentQuestionIndex];
-  const buttons = optionsContainer.querySelectorAll(".option-btn");
 
+  // 1. 정답을 맞힌 경우
   if (index === currentQuiz.answer) {
-    score += 10;
-    categoryScores[currentQuiz.category].correct++;
+    isSolved = true;
     selectedBtn.classList.add("correct");
-    resultMessage.textContent = "⭕ 정답입니다!";
-    resultMessage.className = "result-message correct";
+
+    // 점수 계산 (첫 시도 10점, 재시도 후 정답 시 5점)
+    if (attemptCount === 1) {
+      score += 10;
+      categoryScores[currentQuiz.category].correct++;
+      feedbackMessage.textContent = "⭕ 정답입니다! (10점 획득)";
+    } else {
+      score += 5;
+      categoryScores[currentQuiz.category].correct += 0.5; // 부분 점수 집계
+      feedbackMessage.textContent = `⭕ 정답입니다! (${attemptCount}번째 시도로 정답! 5점 획득)`;
+    }
+
+    feedbackMessage.className = "feedback-message correct";
+    currentScoreDisplay.textContent = score;
+
+    // 모든 보기 버튼 비활성화
+    const buttons = optionsContainer.querySelectorAll(".option-btn");
+    buttons.forEach(btn => btn.disabled = true);
+
+    // 정답 시 해설과 '다음 문제' 버튼 활성화
+    explanationBox.classList.remove("hidden");
+    nextBtn.classList.remove("hidden");
+    hintBtn.classList.add("hidden");
+    hintBox.classList.add("hidden");
+
   } else {
+    // 2. 오답을 선택한 경우 (다시 도전 유도)
     selectedBtn.classList.add("incorrect");
-    buttons[currentQuiz.answer].classList.add("correct");
-    resultMessage.textContent = "❌ 오답입니다.";
-    resultMessage.className = "result-message incorrect";
+    selectedBtn.disabled = true; // 선택한 틀린 버튼만 비활성화
+
+    feedbackMessage.textContent = "❌ 틀렸습니다. 다른 답을 선택해 보세요!";
+    feedbackMessage.className = "feedback-message incorrect";
   }
-
-  buttons.forEach(btn => btn.disabled = true);
-
-  explanationBox.classList.remove("hidden");
-  nextBtn.classList.remove("hidden");
-  hintBtn.classList.add("hidden");
-  hintBox.classList.add("hidden");
-  
-  currentScoreDisplay.textContent = score;
 }
 
 // 힌트 토글
@@ -237,12 +258,12 @@ function showResults() {
 
   finalScoreDisplay.textContent = score;
 
-  if (score === 100) {
-    evaluationMessage.textContent = "🎉 완벽합니다! 조선 후기 외교와 전쟁 단원을 완전히 마스터했네요!";
-  } else if (score >= 70) {
-    evaluationMessage.textContent = "👍 참 잘했습니다! 틀린 문제의 해설을 다시 읽고 완벽히 정리해 보세요.";
+  if (score >= 90) {
+    evaluationMessage.textContent = "🎉 대단합니다! 조선 후기 외교와 전쟁 단원의 핵심을 완벽히 이해하셨네요!";
+  } else if (score >= 60) {
+    evaluationMessage.textContent = "👍 잘했습니다! 스스로 문제를 해결하며 부족한 부분을 잘 보완했습니다.";
   } else {
-    evaluationMessage.textContent = "📚 다시 한번 교과서 내용을 복습해 보고 재도전해 보세요!";
+    evaluationMessage.textContent = "📚 끝까지 포기하지 않고 풀어낸 노력이 훌륭합니다! 교과서를 다시 살펴보고 재도전해 보세요.";
   }
 
   categoryResults.innerHTML = "";
@@ -250,9 +271,12 @@ function showResults() {
     if (categoryScores[category].total > 0) {
       const item = document.createElement("div");
       item.classList.add("category-item");
+      
+      // 이해도 표시
+      const categoryScore = Math.min(100, Math.round((categoryScores[category].correct / categoryScores[category].total) * 100));
       item.innerHTML = `
         <span><strong>${category}</strong></span>
-        <span>${categoryScores[category].correct} / ${categoryScores[category].total} 문제 맞춤</span>
+        <span>이해도: ${categoryScore}%</span>
       `;
       categoryResults.appendChild(item);
     }
