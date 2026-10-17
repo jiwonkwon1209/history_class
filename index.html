@@ -35,7 +35,7 @@
 
       <div class="guide-box">
         <p><i class="fa-solid fa-circle-info"></i> 총 10문항으로 구성되어 있습니다.</p>
-        <p><i class="fa-solid fa-circle-info"></i> 문제를 풀며 개념과 해설을 차근차근 복습해 보세요!</p>
+        <p><i class="fa-solid fa-circle-info"></i> 틀려도 정답을 맞힐 때까지 다시 도전할 수 있습니다!</p>
       </div>
 
       <button id="start-btn" class="btn btn-primary btn-large">
@@ -65,12 +65,14 @@
           <!-- 보기 버튼들이 JavaScript로 생성됩니다. -->
         </div>
 
+        <!-- 실시간 오답/정답 피드백 메시지 영역 -->
+        <div id="feedback-message" class="feedback-message hidden"></div>
+
         <div id="hint-box" class="hint-box hidden">
           <p><i class="fa-regular fa-lightbulb"></i> <strong>힌트:</strong> <span id="hint-text"></span></p>
         </div>
 
         <div id="explanation-box" class="explanation-box hidden">
-          <div id="result-message" class="result-message"></div>
           <p><strong><i class="fa-solid fa-book-open"></i> 해설:</strong> <span id="explanation-text"></span></p>
         </div>
       </div>
