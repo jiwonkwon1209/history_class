@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>중3 역사 - 조선 후기 외교와 전쟁 복습 퀴즈</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- 메인 시작 화면 -->
+    <div id="start-screen" class="card fade-in">
+      <div class="badge"><i class="fa-solid fa-scroll"></i> 중학교 3학년 역사</div>
+      <h1>조선 후기의 수난과 외교</h1>
+      <p class="subtitle">임진왜란 · 광해군의 정치 · 두 호란 복습 퀴즈</p>
+      
+      <div class="topic-info">
+        <div class="topic-item">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>임진왜란</span>
+        </div>
+        <div class="topic-item">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <span>광해군의 중립외교</span>
+        </div>
+        <div class="topic-item">
+          <i class="fa-solid fa-horse-head"></i>
+          <span>정묘·병자호란</span>
+        </div>
+      </div>
+
+      <div class="guide-box">
+        <p><i class="fa-solid fa-circle-info"></i> 총 10문항으로 구성되어 있습니다.</p>
+        <p><i class="fa-solid fa-circle-info"></i> 문제를 풀며 개념과 해설을 차근차근 복습해 보세요!</p>
+      </div>
+
+      <button id="start-btn" class="btn btn-primary btn-large">
+        <i class="fa-solid fa-play"></i> 퀴즈 시작하기
+      </button>
+    </div>
+
+    <!-- 퀴즈 진행 화면 -->
+    <div id="quiz-screen" class="card hidden">
+      <div class="quiz-header">
+        <div class="progress-container">
+          <span id="question-number">문제 1 / 10</span>
+          <div class="progress-bar-bg">
+            <div id="progress-bar" class="progress-bar-fill"></div>
+          </div>
+        </div>
+        <div class="score-display">
+          점수: <span id="current-score">0</span>점
+        </div>
+      </div>
+
+      <div id="question-box">
+        <span id="category-tag" class="category-tag">카테고리</span>
+        <h2 id="question-text">여기에 문제가 표시됩니다.</h2>
+        
+        <div id="options-container" class="options-container">
+          <!-- 보기 버튼들이 JavaScript로 생성됩니다. -->
+        </div>
+
+        <div id="hint-box" class="hint-box hidden">
+          <p><i class="fa-regular fa-lightbulb"></i> <strong>힌트:</strong> <span id="hint-text"></span></p>
+        </div>
+
+        <div id="explanation-box" class="explanation-box hidden">
+          <div id="result-message" class="result-message"></div>
+          <p><strong><i class="fa-solid fa-book-open"></i> 해설:</strong> <span id="explanation-text"></span></p>
+        </div>
+      </div>
+
+      <div class="quiz-footer">
+        <button id="hint-btn" class="btn btn-secondary"><i class="fa-regular fa-lightbulb"></i> 힌트 보기</button>
+        <button id="next-btn" class="btn btn-primary hidden">다음 문제 <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen" class="card hidden fade-in">
+      <div class="result-header">
+        <i id="result-icon" class="fa-solid fa-trophy"></i>
+        <h2>퀴즈 완료!</h2>
+        <p class="final-score">최종 점수: <span id="final-score">0</span> / 100점</p>
+      </div>
+
+      <div id="evaluation-message" class="evaluation-message">
+        <!-- 평가 메시지가 표시됩니다. -->
+      </div>
+
+      <div class="category-breakdown">
+        <h3>영역별 이해도 결과</h3>
+        <div id="category-results">
+          <!-- 영역별 점수가 자바스크립트로 출력됩니다. -->
+        </div>
+      </div>
+
+      <button id="restart-btn" class="btn btn-primary btn-large">
+        <i class="fa-solid fa-rotate-right"></i> 다시 도전하기
+      </button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
